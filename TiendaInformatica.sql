@@ -163,3 +163,25 @@ select * from producto order by precio desc;
 
 select descripcion,existencias from producto where precio>=2000;
 -- muestra las dos columnas de productos donde el precio sea mayor o igual que 2000
+
+select * from Cliente where ciudad='Madrid' or ciudad='barcelona';
+-- select * from Cliente where ciudad in('Madrid','Barcelona');
+
+select * from Cliente where ciudad LIKE 'M%'; -- Filtra la ciudad que empiece por M
+
+select AVG(precio) as precio_medio from Producto where id_fab=1;
+
+select MIN(fecha_pedido) as f_min from Pedido;
+
+select distinct pais from fabricante;
+
+select fecha_pedido from pedido where fecha_pedido between '2024-01-01' AND '2024-02-05';
+
+select nombre, concat(direccion, ' ',ciudad) as direc_completa from cliente;
+
+select pais, COUNT(*) as num_total from fabricante group by pais;
+
+-- where condiciona y filtra y having hace lo mismo solo que es necesario que haya un group by
+-- de esta forma si quiero filtrar en la siguiente consulta, usaría HAVING
+
+select pais, COUNT(*) as num_total from fabricante group by pais having num_total > 2;
