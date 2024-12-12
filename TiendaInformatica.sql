@@ -185,3 +185,7 @@ select pais, COUNT(*) as num_total from fabricante group by pais;
 -- de esta forma si quiero filtrar en la siguiente consulta, usaría HAVING
 
 select pais, COUNT(*) as num_total from fabricante group by pais having num_total > 2;
+
+SELECT * from pedido where id_cliente = 2;
+
+SELECT id_producto, precio * 1.21 as precio_con_IVA from producto;
