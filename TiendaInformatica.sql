@@ -189,3 +189,6 @@ select pais, COUNT(*) as num_total from fabricante group by pais having num_tota
 SELECT * from pedido where id_cliente = 2;
 
 SELECT id_producto, precio * 1.21 as precio_con_IVA from producto;
+
+select count(*) as suma from producto where precio >= 1000;
+
