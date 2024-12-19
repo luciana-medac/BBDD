@@ -192,3 +192,74 @@ SELECT id_producto, precio * 1.21 as precio_con_IVA from producto;
 
 select count(*) as suma from producto where precio >= 1000;
 
+select nombre, concat(direccion, ' ',ciudad) as direc_completa from cliente;
+-- clientes con su nombre completo (direccion + ciudad) concatenados en un solo campo.
+
+select pais, COUNT(*) as num_total from fabricante group by pais;
+select pais, COUNT(*) as num_total from fabricante group by pais having num_total > 2;
+-- fabricantes que hay en cada país
+
+SELECT id_producto, precio * 1.21 as precio_con_IVA from producto;
+-- Muestra en otra columna llamada precio_con_iva todos los datos de los productos.
+
+SELECT UPPER(nombre) from Cliente;
+-- Convertir nombres de clientes a mayúsculas
+
+SELECT LOWER(descripcion) from Producto;
+-- Convertir descripciones de productos a minúsculas
+
+SELECT concat(UPPER(nombre), UPPER(direccion)) as nombre_completo from Cliente;
+-- Escribir en una línea el nombre y la dirección de cada cliente en mayúsculas, en una columna llamada Nombre_Completo
+
+SELECT concat('Producto: ', descripcion) as producto_descripcion from Producto;
+-- Haz que la tabla productos empiece por producto: 
+
+SELECT SUBSTR(pais, 1, 3) FROM Fabricante;
+-- tres primeras letras del nombre de cada país  de fabricantes
+
+SELECT REPLACE(direccion, 'Calle', 'Avda') from Cliente;
+-- Reemplazar "Calle" por "Avda." en las direcciones de cliente
+
+select datediff(sysdate(), fecha_pedido) as "Dias_Pasados" from pedido; 
+-- dice cuantos dias han pasado desde la fecha que se indica hasta el dia de hoy
+
+select last_day(fecha_pedido) from pedido; 
+-- Obtener la última fecha del mes en que se realizó cada pedido (función LAST_DAY):
+
+select estado, 
+-- Asignar un estado personalizado a los pedidos dependiendo de su estado actual, 'Finalizado', 'Anulado'
+	case
+	when 'Completado' then 'finalizado'
+    when 'Cancelado' then 'Anulado'
+    end as "estado" from pedido;
+    
+select * from pedido where fecha_pedido between "2023-01-01" and "2023-12-31"; 
+-- Obtener los pedidos realizados en 2023.
+
+select power(precio,2) from producto; 
+-- Elevar el precio de cada producto al cuadrado
+
+select round(precio,1) from producto; 
+-- redondea a un decimal 
+
+select extract(year from fecha_pedido) from pedido; 
+-- extrae el año de la fecha seleccionada mediante extract
+
+select count( extract(year from fecha_pedido))from pedido ; 
+-- cuenta cuantos pedidos se han realizado en cada año
+
+select reverse(nombre) from cliente; 
+-- da la vuelta a los nombres, los pone a la inversa
+
+-- SELECT TRIM('   ejemplo de texto   ') AS Texto_Limpio  FROM DUAL;
+
+select 
+nombre, 
+pais, 
+row_number() over (
+partition by pais ) as rango
+from fabricante;
+-- asignar un rango a los fabricantes de un pais
+
+
+
