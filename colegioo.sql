@@ -183,7 +183,17 @@ FROM asignatura a
 LEFT JOIN asignatura_alumno aa ON a.idAsignatura = aa.idAsignatura
 GROUP BY 1;
 
+-- 17. Observa las dos consultas anteriores y describe las similitudes y diferencias con tus palabras
+-- Explicado en el pdf
 
+-- 18. Encuentra los alumnos que no están matriculados en ninguna asignatura.
+SELECT alu.nombre, COUNT(asigAlu.idAsignatura) as numAsignatura FROM alumno as alu
+LEFT JOIN asignatura_alumno as asigAlu ON alu.idAlumno = asigAlu.idAlumno
+GROUP BY 1;
+
+-- 19. Edita la tabla asignaturas para que el id profesor que la imparte 
+-- pueda ser un campo vacío (imagina que un profesor 
+-- tiene que irse y la asignatura permanece una semana sin profesor)
 
 
 
