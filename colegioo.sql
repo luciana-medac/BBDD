@@ -129,7 +129,8 @@ INNER JOIN profesor as pro ON asig.idProfesor = pro.idProfesor;
 -- 9. Muestra el nombre de las asignaturas y el número de alumnos matriculados en cada una.
 SELECT asig.idAsignatura, asig.nombre as Asignatura, COUNT(asigAlu.idAsignatura) as num_Alumnos
 FROM asignatura as asig
-LEFT JOIN asignatura_alumno as asigAlu ON asig.idAsignatura = asigAlu.idAsignatura
+INNER JOIN asignatura_alumno as asigAlu ON asig.idAsignatura = asigAlu.idAsignatura
+INNER JOIN alumno as alu ON asigAlu.idAlumno = alu.idAlumno
 GROUP BY 1;
 
 -- Nombre: Luciana Molina Gregoli
