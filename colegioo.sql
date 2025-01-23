@@ -58,13 +58,13 @@ INSERT INTO Asignatura_Alumno(idAsignatura, idAlumno) values
 -- INSERT INTO Asignatura_Alumno(idAsignatura) values
 -- 	(3);
 
-    
-
 -- CONSULTAS
 
 -- EJEMPLO: Muestra el nombre de la asignatura que imparte Celia
 
 SELECT a.nombre FROM asignatura as a INNER JOIN profesor as p ON a.idProfesor = p.idProfesor WHERE p.nombre = 'Celia';
+
+-- TAREA DE CONSULTAS DEL TEMA 11
 
 -- Nombre: Luciana Molina Gregoli
 -- 1. Muestra el nombre de las asignaturas en las que está matriculado un alumno cuyo nombre sea "Juan".
@@ -127,7 +127,7 @@ INNER JOIN profesor as pro ON asig.idProfesor = pro.idProfesor;
 
 -- Nombre: Luciana Molina Gregoli
 -- 9. Muestra el nombre de las asignaturas y el número de alumnos matriculados en cada una.
-SELECT asig.idAsignatura, asig.nombre as Asignatura, COUNT(asigAlu.idAsignatura) as num_Alumnos
+SELECT asig.idAsignatura, asig.nombre, COUNT(asigAlu.idAsignatura) as num_Alumnos
 FROM asignatura as asig
 INNER JOIN asignatura_alumno as asigAlu ON asig.idAsignatura = asigAlu.idAsignatura
 INNER JOIN alumno as alu ON asigAlu.idAlumno = alu.idAlumno
@@ -186,19 +186,69 @@ GROUP BY 1;
 -- 17. Observa las dos consultas anteriores y describe las similitudes y diferencias con tus palabras
 -- Explicado en el pdf
 
+-- Nombre: Luciana Molina Gregoli
 -- 18. Encuentra los alumnos que no están matriculados en ninguna asignatura.
 SELECT alu.nombre, COUNT(asigAlu.idAsignatura) as numAsignatura FROM alumno as alu
 LEFT JOIN asignatura_alumno as asigAlu ON alu.idAlumno = asigAlu.idAlumno
 GROUP BY 1;
+-- Consulta modificada
+SELECT alu.*, asigAlu.idAsignatura
+FROM alumno as alu
+LEFT JOIN asignatura_alumno as asigAlu ON alu.idAlumno = asigAlu.idAlumno
+WHERE asigAlu.idAlumno is null;
 
+-- Nombre: Luciana Molina Gregoli
 -- 19. Edita la tabla asignaturas para que el id profesor que la imparte 
--- pueda ser un campo vacío (imagina que un profesor 
--- tiene que irse y la asignatura permanece una semana sin profesor)
+-- pueda ser un campo vacío (imagina que un profesor tiene que irse y la asignatura permanece una semana sin profesor)
+ALTER TABLE asignatura
+MODIFY COLUMN idProfesor int null;
 
+-- Nombre: Luciana Molina Gregoli
+-- 20. Inserta la asignatura ‘asignaturaSinProfesor’ y muestra una captura de pantalla de la tabla asignaturas.
+INSERT INTO asignatura(nombre) values
+	('asignaturaSinProfesor');
+    
+SELECT * FROM asignatura;
 
+-- Nombre: Luciana Molina Gregoli
+-- 21. Lista todas las asignaturas junto con el nombre del profesor que las imparte, incluyendo las asignaturas sin profesor.
+SELECT asig.*, pro.nombre FROM asignatura as asig
+LEFT JOIN profesor as pro ON asig.idProfesor = pro.idProfesor;
 
+-- Nombre: Luciana Molina Gregoli
+-- 22. Muestra los nombres de las asignaturas y los nombres de los alumnos que las 
+-- cursan, incluyendo asignaturas sin alumnos.
+SELECT asig.*, alu.nombre FROM asignatura as asig
+LEFT JOIN asignatura_alumno as asigAlu ON asigAlu.idAsignatura = asig.idAsignatura
+LEFT JOIN alumno as alu ON asigAlu.idAlumno = alu.idAlumno;
 
+-- Nombre: Luciana Molina Gregoli
+-- 23. Muestra el nombre de las asignaturas, el número de alumnos matriculados y el nombre del profesor que las imparte.
+SELECT asig.nombre as Asignatura, COUNT(asigAlu.idAsignatura) as num_Alumnos, pro.nombre, pro.apellidos
+FROM asignatura as asig
+LEFT JOIN asignatura_alumno as asigAlu ON asig.idAsignatura = asigAlu.idAsignatura
+LEFT JOIN alumno as alu ON asigAlu.idAlumno = alu.idAlumno
+LEFT JOIN profesor as pro ON asig.idProfesor = pro.idProfesor
+GROUP BY asig.nombre, pro.nombre, pro.apellidos;  -- Se agrupa por las columnas que se van a seleccionar
 
+-- Nombre: Luciana Molina Gregoli
+-- 24. Muestra el nombre de las asignaturas que tienen profesor asignado, el número de alumnos matriculados y el nombre del profesor que las imparte.
+SELECT asig.nombre as Asignatura, COUNT(asigAlu.idAsignatura) as num_Alumnos, pro.nombre, pro.apellidos
+FROM asignatura as asig
+INNER JOIN profesor as pro ON asig.idProfesor = pro.idProfesor
+LEFT JOIN asignatura_alumno as asigAlu ON asig.idAsignatura = asigAlu.idAsignatura
+LEFT JOIN alumno as alu ON asigAlu.idAlumno = alu.idAlumno
+GROUP BY asig.nombre, pro.nombre, pro.apellidos;
+
+-- Nombre: Luciana Molina Gregoli
+-- 25. Muestra el nombre de las asignaturas que tienen profesor asignado
+-- y alumnos matriculados. Muestra el número de alumnos matriculados y el nombre del profesor que las imparte.
+SELECT asig.nombre as Asignatura, COUNT(asigAlu.idAsignatura) as num_Alumnos, pro.nombre, pro.apellidos
+FROM asignatura as asig
+INNER JOIN profesor as pro ON asig.idProfesor = pro.idProfesor
+INNER JOIN asignatura_alumno as asigAlu ON asig.idAsignatura = asigAlu.idAsignatura
+INNER JOIN alumno as alu ON asigAlu.idAlumno = alu.idAlumno
+GROUP BY asig.nombre, pro.nombre, pro.apellidos;
 
 
 
