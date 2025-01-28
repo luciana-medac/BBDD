@@ -254,7 +254,6 @@ GROUP BY asig.nombre, pro.nombre, pro.apellidos;
 -- TAREA 2 SUBCONSULTAS
 
 -- 1. Muestra todos los datos de las asignatras que no tienen alumnos inscritos
-
 SELECT * 
 FROM asignatura as asig
 WHERE idAsignatura NOT IN (SELECT idAsignatura FROM asignatura_alumno);
@@ -298,7 +297,8 @@ SELECT * FROM asignatura_alumno
 WHERE nota <= ALL (SELECT nota FROM asignatura_alumno);
 
 -- 6. Selecciona las tuplas de la tabla asignatura_alumno que tengan la nota más baja
-SELECT * < ANY (SELECT nota FROM asignatura_alumno);
+SELECT * FROM asignatura_alumno
+WHERE nota < ANY (SELECT nota FROM asignatura_alumno);
 
 -- 7. ¿Cuántas tuplas tienen una nota mayor que la nota más baja?
 SELECT * FROM asignatura_alumno
@@ -311,9 +311,9 @@ WHERE nota > ANY (SELECT nota FROM asignatura_alumno);
 
 SELECT CONCAT(nombre, apellidos) as Alumnos_BBDD FROM alumno as alu
 INNER JOIN asignatura_alumno as asigAlu ON asigAlu.idAlumno = alu.idAlumno
-WHERE idAsignatura = 1 AND asigAlu.nota > (SELECT AVG(nota) FROM asignatura_alumno WHERE idAsignatura = 3);
+WHERE idAsignatura = 1 AND asigAlu.nota > (SELECT AVG(nota) FROM asignatura_alumno WHERE idAsignatura = 1);
 
--- Pruebas
+-- Pruebas ejercicio 8
 SELECT AVG(nota) FROM asignatura_alumno WHERE idAsignatura = 1;
 SELECT * FROM asignatura_alumno;
 SELECT * FROM alumno;
@@ -322,9 +322,33 @@ SELECT * FROM asignatura;
 
 -- TAREAS Y CONSULTAS EXTRA
 -- 9. Realiza una consulta con IN o NOT IN.
--- Muestra todos los datos de la asignatura que no tiene ningún profesor
+-- Muestra todos los datos de las asignaturas que no tienen profesor
+SELECT * FROM asignatura
+WHERE idAsignatura IN (SELECT idAsignatura FROM asignatura WHERE idProfesor is null);
 
+-- 10.Realiza una consulta con ANY o ALL.
+-- Selecciona las notas de la tabla asignatura_alumno que tengan la nota más alta
+-- que el resto en la asignatura de programacion
+SELECT nota FROM asignatura_alumno
+WHERE nota >= ALL (SELECT nota FROM asignatura_alumno WHERE idAsignatura = 3);
 
-SELECT * FROM asignatura;
+-- 11.Realiza una consulta con AVG, MAX o MIN.
+-- Muestra los alumnos que tengan media más alta de todas las asignaturas
+SELECT nombre FROM alumno as alu
+INNER JOIN asignatura_alumno as asigAlu ON asigAlu.idAlumno = alu.idAlumno
+WHERE AVG(nota) > (SELECT AVG(nota) FROM asignatura_alumno);
+
+-- 12.Realiza una consulta con COUNT o SUM.
+-- Cuantos alumnos tienen una nota mayor a la media de todas las asignaturas
+SELECT COUNT(asigAlu.idAlumno) as AlumDestacados 
+FROM asignatura_alumno as asigAlu
+WHERE asigAlu.nota > (SELECT AVG(nota) FROM asignatura_alumno);
+
+-- 13.Realiza una consulta con HAVING.
+-- Muestra los alumnos tienen una media mayor a 6 en todas las asignaturas
+SELECT alu.nombre, alu.apellidos, AVG(nota) as media FROM alumno as alu
+INNER JOIN asignatura_alumno as asigAlu ON asigAlu.idAlumno = alu.idAlumno
+GROUP BY asigAlu.idAlumno
+HAVING AVG(nota) > 6;
 
 
