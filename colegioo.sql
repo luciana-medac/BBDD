@@ -251,5 +251,80 @@ INNER JOIN alumno as alu ON asigAlu.idAlumno = alu.idAlumno
 GROUP BY asig.nombre, pro.nombre, pro.apellidos;
 
 
+-- TAREA 2 SUBCONSULTAS
+
+-- 1. Muestra todos los datos de las asignatras que no tienen alumnos inscritos
+
+SELECT * 
+FROM asignatura as asig
+WHERE idAsignatura NOT IN (SELECT idAsignatura FROM asignatura_alumno);
+
+-- 2. Muestra el nombre de los profesores que imparten alguna asignatura
+-- a. OPCION JOIN
+SELECT pro.nombre FROM profesor as pro
+INNER JOIN asignatura as asig ON pro.idProfesor = asig.idProfesor;
+-- b. OPCION SUBCONSULTA
+SELECT pro.nombre 
+FROM profesor as pro
+WHERE idProfesor = ANY (SELECT idProfesor FROM asignatura);
+
+-- 3.Muestra el nombre de los profesores que NO imparten ninguna asignatura
+-- a. OPCION JOIN
+SELECT pro.nombre FROM profesor as pro
+LEFT JOIN asignatura as asig ON pro.idProfesor = asig.idProfesor
+WHERE asig.idProfesor is null;
+-- b. OPCION SUBCONSULTA
+SELECT nombre FROM profesor
+WHERE idProfesor NOT IN 
+		(SELECT idProfesor FROM asignatura 
+			WHERE idProfesor is not null);
+
+-- 4. Edita la tabla asignatura_alumno y añade el campo nota, un valor entero no nulo
+ALTER TABLE asignatura_alumno
+ADD COLUMN nota int;
+
+UPDATE asignatura_alumno SET nota = 8 WHERE idAlumno = 1 AND idAsignatura = 1;
+UPDATE asignatura_alumno SET nota = 6 WHERE idAlumno = 5 AND idAsignatura = 1;
+UPDATE asignatura_alumno SET nota = 7 WHERE idAlumno = 1 AND idAsignatura = 2;
+UPDATE asignatura_alumno SET nota = 7 WHERE idAlumno = 5 AND idAsignatura = 2;
+UPDATE asignatura_alumno SET nota = 4 WHERE idAlumno = 2 AND idAsignatura = 3;
+UPDATE asignatura_alumno SET nota = 4 WHERE idAlumno = 1 AND idAsignatura = 3;
+UPDATE asignatura_alumno SET nota = 10 WHERE idAlumno = 6 AND idAsignatura = 3;
+
+SELECT * FROM asignatura_alumno;
+
+-- 5. Selecciona las tuplas de la tabla asignatura_alumno que tengan la nota más baja que el resto
+SELECT * FROM asignatura_alumno
+WHERE nota <= ALL (SELECT nota FROM asignatura_alumno);
+
+-- 6. Selecciona las tuplas de la tabla asignatura_alumno que tengan la nota más baja
+SELECT * < ANY (SELECT nota FROM asignatura_alumno);
+
+-- 7. ¿Cuántas tuplas tienen una nota mayor que la nota más baja?
+SELECT * FROM asignatura_alumno
+WHERE nota > ANY (SELECT nota FROM asignatura_alumno);
+-- Respuesta: 5 tuplas son las que tienen mayor nota que la más baja
+
+-- 8.Muestra en una sola columna el nombre y apellidos de los alumnos de Bases de Datos
+-- que tienen la nota superior a la media de esa asignatura. 
+-- (La media se representa con AVG)
+
+SELECT CONCAT(nombre, apellidos) as Alumnos_BBDD FROM alumno as alu
+INNER JOIN asignatura_alumno as asigAlu ON asigAlu.idAlumno = alu.idAlumno
+WHERE idAsignatura = 1 AND asigAlu.nota > (SELECT AVG(nota) FROM asignatura_alumno WHERE idAsignatura = 3);
+
+-- Pruebas
+SELECT AVG(nota) FROM asignatura_alumno WHERE idAsignatura = 1;
+SELECT * FROM asignatura_alumno;
+SELECT * FROM alumno;
+SELECT * FROM asignatura;
+
+
+-- TAREAS Y CONSULTAS EXTRA
+-- 9. Realiza una consulta con IN o NOT IN.
+-- Muestra todos los datos de la asignatura que no tiene ningún profesor
+
+
+SELECT * FROM asignatura;
 
 
