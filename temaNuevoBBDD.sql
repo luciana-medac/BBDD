@@ -130,7 +130,7 @@ UPDATE practicas
 SET id_empresa = 1
 WHERE id_alum = 1;
 
--- 
+
 UPDATE practicas SET
 cursos = 1, evaluacion_porcentaje = 0
 WHERE id_alum IS NULL;
@@ -175,6 +175,19 @@ WHERE id = 1;
 
 DELETE FROM empresa
 WHERE nombre = 'GOOGLE';
+
+-- TEMA NUEVO INDICE Y VISTAS
+
+CREATE VIEW vista_alum_asig AS
+SELECT a.id as id_alumnos, a.nombre as nombre_alumno, a.apellidos, asi.id, asi.nombre, id_prof
+FROM alumnos AS a
+INNER JOIN asignatura_alumno AS aa ON aa.id_alum = a.id
+INNER JOIN asignaturas AS asi ON asi.id = aa.id_asig;
+
+SELECT * FROM vista_alum_asig;
+
+
+
 
 
 

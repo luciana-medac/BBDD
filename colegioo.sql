@@ -351,4 +351,6 @@ INNER JOIN asignatura_alumno as asigAlu ON asigAlu.idAlumno = alu.idAlumno
 GROUP BY asigAlu.idAlumno
 HAVING AVG(nota) > 6;
 
+-- TEMA NUEVO INDICE Y VISTAS
 
+CREATE VIEW vista_alum_asig
