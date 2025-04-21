@@ -1,0 +1,22 @@
+
+Un bloque anónimo no se almacena, se utilizan para pruebas
+
+
+Comandos
+
+	- en System (por encima está sys)
+	- alter user system account unlock; --> para desbloquear el usuario
+
+En system:
+ 
+	- alter sesión set "_ORACLE_SCRIPT" = true;
+
+	- créate user concesionario IDENTIFIED BY "Med@c"
+	- DEFAULT TABLESPACE users
+	- TEMPORARY TABLESPACE temp
+	- QUOTA 100M ON USERS;
+
+	- GRANT CONNECT, RESOURCE TO concesionario; (sirve para conceder permisos)
+	- REVOKE (sirve para eliminar permisos)
+
+Después añadimos una nueva conexión con el mismo nombre del usuario (el + verde donde conexiones)

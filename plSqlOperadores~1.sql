@@ -219,6 +219,11 @@ BEGIN
     dbms_output.put_line(marica(nombre2 => nombre1));
 END;
 
+/**FORMA DE HACERLO DE LA PROFESORA**/
+BEGIN
+    dbms_output.put_line(TO_CHAR(SYSDATE, format => 'YYYY');
+END;
+
 /**21. MUESTRA UNA CADENA DE TEXTO ENTRE COMILLAS SIMPLES**/
 BEGIN
     dbms_output.put_line('cadena de texto entre comilas simples');
