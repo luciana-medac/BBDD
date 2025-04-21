@@ -14,7 +14,7 @@ BEGIN
 
 END;
 
-/* EJERCICIO 2: IGUAL QUE EL ANTERIOR PERO CAPTURANDO UNA EXCEPCI�N EN CASO DE QE NO EXISTA EL ID */
+/* EJERCICIO 2: IGUAL QUE EL ANTERIOR PERO CAPTURANDO UNA EXCEPCIÓN EN CASO DE QE NO EXISTA EL ID */
 SELECT * FROM marcas_coche;
 
 DECLARE
@@ -37,7 +37,7 @@ EXCEPTION
         dbms_output.put_line('Error desconocido');
 END;
 
-/* MOSTRAR EL NOMBRE Y EL TELEFONO DE UN CLIENTE DADO SU DNI
+/* EJERCICIO 3: MOSTRAR EL NOMBRE Y EL TELEFONO DE UN CLIENTE DADO SU DNI
     (AL TRATARSE D UN VARCHAR2 TENEIS QUE PONER EL DNI ENTRE COMILLAS*/
 SELECT * FROM cliente; 
 DECLARE
@@ -53,4 +53,102 @@ BEGIN
     dbms_output.put_line('El dni es: ' || v_dni || 'y el telefono es' || v_telefono);
 
 END;
+
+/* EJERCICIO 4: MOSTRAR EL NOMBRE Y EL TELEFONO DE UN LIENTE DADO SU DNI (IGUAL AL ANTERIOR PERO USANDO %ROWTYPE */
+-- %ROWTYPE --> sirve para almacenar una fila completa de una tabla sin tener que declarar cada columna como variable indivisual
+
+DECLARE
+	
+    v_dni cliente.nombre%TYPE := &id_dni1;
+    v_cliente cliente%ROWTYPE;
+    
+BEGIN
+	SELECT
+		nombre, telef
+        INTO v_cliente
+		FROM cliente
+        WHERE v_dni = dni;
+        
+        dbms_output.put_line('El nombre es: ' || v_nombre || ' y su telefono ' || v_telef);
+END;
+
+/* EJERCICIO 5: MOSTRAR TODA LA INFORMACIÓN DE UN COCHE DADA LA MATRICULA (MATRICULA, ID_MODELO, PRECIO_COMPRA) */
+
+DECLARE
+	
+    v_matricula coche.matricula%TYPE := &matricula1
+    v_coche coche%ROWTYPE;
+    
+BEGIN
+
+	SELECT *
+    INTO v_coche
+    FROM coche
+    WHERE v_matricula = matricula;
+	
+    dbms_output.put_line('Matricula: ' 
+						|| 'id del modelo: ' 
+						|| v_coche.id_modelo 
+                        || ' precio compra: ' 
+                        || v_coche.precio_compra);
+END;
+
+/*EJERCICIO 6: MOSTRAR TODA LA INFORMACION DEL MODELO DE UN COCHE DADO UN ID INCLUIDO EL NOMBRE DE LA MARCA */
+
+DECLARE
+    v_id_modelo modelo_coche.idk_modelo%TYPE := &id_modelo1;
+    v_modelo_coche modelo_coche%ROWTYPE;
+    v_marcas marcas_coche%TYPE;
+BEGIN
+	SELECT 
+		m.id_modelo, m.descripcion, m.id_marca, ma.marca
+	INTO
+		v_modelo_coche.id_modelo,
+        v_modelo_coche.descripcion,
+        v_modelo_coche.id_marca,
+        v_marca
+	FROM
+		modelo_coche m
+        JOIN marcas_coche ma ON m.id_marca = ma.id_marca
+	WHERE m.id_modelo = v_id_modelo;
+    
+     dbms_output.put_line('id_modelo: '
+                         || v_id_modelo
+                         || ' descripcion: '
+                         || v_modelo_coche.descripcion
+                         || '  id_marca: '
+                         || v_modelo_coche.id_marca
+                         || ' marca: '
+                         || v_marca);
+	
+	END;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
