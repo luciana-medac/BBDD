@@ -139,6 +139,10 @@ BEGIN
         GROUP BY 1;
     
     dbms_output.put_line('las ventas totales son: ' || v_precio);
+
+EXCEPTION
+    WHEN no_data_found THEN
+        dbms_output.put_line('dni no encontrado ');
 END;
 
 
