@@ -123,8 +123,46 @@ BEGIN
 	
 	END;
 
+/* EJERCICIO 7: MOSTRAR LA SUMA DE VENTAS PASANDO EL DNI POR PARÁMETRO */
+SELECT * FROM vende;
+DECLARE
+    
+    v_dni_cliente vende.dni_cliente%TYPE := &dni_cliente;
+    v_precio vende.precio%TYPE;
+    
+BEGIN
+
+    SELECT 
+        SUM(precio) 
+        INTO v_precio
+        FROM vende
+        GROUP BY 1;
+    
+    dbms_output.put_line('las ventas totales son: ' || v_precio);
+END;
 
 
+/*EJERCICIO 8: MOSTRAR CUÁNTOS MODELOS DE COCHES HAY DE LA MARCA: 'CITROEN' */
+SELECT * FROM marcas_coche;
+DECLARE
+    
+    v_marca marcas_coche.marca%TYPE := &marca1;
+    v_modelo modelo_coche.id_modelo%TYPE;
+    v_id_marca marcas_coche.id_marca%TYPE;
+    
+    
+BEGIN
+
+    SELECT
+        COUNT(m.id_modelo)
+        INTO v_modelo
+        FROM modelo_coche m 
+        JOIN marcas_coche ma ON m.id_marca = ma.id_marca
+        where v_marca = ma.marca;
+        
+        dbms_output.put_line('Hay un total de: ' || v_modelo || v_marca);
+        
+END;
 
 
 
