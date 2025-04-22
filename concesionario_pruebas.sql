@@ -136,13 +136,13 @@ BEGIN
         SUM(precio) 
         INTO v_precio
         FROM vende
-        GROUP BY 1;
+        WHERE v_dni_cliente = dni_cliente;
     
     dbms_output.put_line('las ventas totales son: ' || v_precio);
 
 EXCEPTION
     WHEN no_data_found THEN
-        dbms_output.put_line('dni no encontrado ');
+        dbms_output.put_line(v_dni_cliente || 'no se ha encontrado ');
 END;
 
 
