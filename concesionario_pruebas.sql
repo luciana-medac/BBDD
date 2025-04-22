@@ -59,7 +59,7 @@ END;
 
 DECLARE
 	
-    v_dni cliente.nombre%TYPE := &id_dni1;
+    v_dni cliente.nombre%TYPE := &dni1;
     v_cliente cliente%ROWTYPE;
     
 BEGIN
@@ -73,7 +73,7 @@ BEGIN
 END;
 
 /* EJERCICIO 5: MOSTRAR TODA LA INFORMACIÓN DE UN COCHE DADA LA MATRICULA (MATRICULA, ID_MODELO, PRECIO_COMPRA) */
-
+SELECT * FROM coche;
 DECLARE
 	
     v_matricula coche.matricula%TYPE := &matricula1
@@ -94,11 +94,11 @@ BEGIN
 END;
 
 /*EJERCICIO 6: MOSTRAR TODA LA INFORMACION DEL MODELO DE UN COCHE DADO UN ID INCLUIDO EL NOMBRE DE LA MARCA */
-
+SELECT * FROM modelo_coche;
 DECLARE
-    v_id_modelo modelo_coche.idk_modelo%TYPE := &id_modelo1;
+    v_id_modelo modelo_coche.id_modelo%TYPE := &id_modelo1;
     v_modelo_coche modelo_coche%ROWTYPE;
-    v_marcas marcas_coche%TYPE;
+    v_marcas marcas_coche.marca%TYPE;
 BEGIN
 	SELECT 
 		m.id_modelo, m.descripcion, m.id_marca, ma.marca
@@ -106,7 +106,7 @@ BEGIN
 		v_modelo_coche.id_modelo,
         v_modelo_coche.descripcion,
         v_modelo_coche.id_marca,
-        v_marca
+        v_marcas
 	FROM
 		modelo_coche m
         JOIN marcas_coche ma ON m.id_marca = ma.id_marca
@@ -119,7 +119,7 @@ BEGIN
                          || '  id_marca: '
                          || v_modelo_coche.id_marca
                          || ' marca: '
-                         || v_marca);
+                         || v_marcas);
 	
 	END;
 
