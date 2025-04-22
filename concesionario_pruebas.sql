@@ -153,18 +153,21 @@ DECLARE
     v_marca marcas_coche.marca%TYPE := &marca1;
     v_modelo modelo_coche.id_modelo%TYPE;
     v_id_marca marcas_coche.id_marca%TYPE;
+    v_cantidad NUMBER;
     
     
 BEGIN
 
     SELECT
         COUNT(m.id_modelo)
-        INTO v_modelo
+        INTO v_cantidad
         FROM modelo_coche m 
         JOIN marcas_coche ma ON m.id_marca = ma.id_marca
         where v_marca = ma.marca;
         
-        dbms_output.put_line('Hay un total de: ' || v_modelo || v_marca);
+        dbms_output.put_line('Hay un total de: '|| v_cantidad 
+                                                || ' '
+                                                || v_marca);
         
 END;
 
