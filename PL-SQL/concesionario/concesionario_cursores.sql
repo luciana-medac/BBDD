@@ -1,4 +1,4 @@
-/* Descripción de los modelos de coche correspondientes a una marca específica, por ejemplo marca con id = 3 */
+/* DescripciÃ³n de los modelos de coche correspondientes a una marca especÃ­fica, por ejemplo marca con id = 3 */
 DECLARE
     
     v_id modelo_coche.id_marca%TYPE := &id;
@@ -21,7 +21,7 @@ BEGIN
     CLOSE c_modelos; -- cerramos el open
 END;
 
-/* Igual que el anterior pero que también nos muestre el número total de modelos con %ROWCOUNT */
+/* Igual que el anterior pero que tambiÃ©n nos muestre el nÃºmero total de modelos con %ROWCOUNT */
 
 DECLARE
     
@@ -46,5 +46,19 @@ BEGIN
     CLOSE c_modelos; -- cerramos el open
 END;
 
-/* Listar los empleados que tienen una antigüedad antes del año 2010 */
-
+/* Listar los empleados que tienen una antigÃ¼edad antes del aÃ±o 2010 */
+DECLARE
+    v_nombre empleado.nombre;
+    CURSOR c_empleados IS
+        SELECT nombre
+        FROM empleado
+        WHERE anio_empleado > '2010-12-31'
+BEGIN
+    OPEN c_empleados
+    LOOP
+        FETCH c_empleados INTO v_nombre;
+    EXIT WHEN c_empleados%NOTFOUND;
+    dbms_output.put_line('Los empleados con antiguedad de antes del 2010 ' || c_empleados)
+    END LOOP;
+    CLOSE c_empleados;
+END;
