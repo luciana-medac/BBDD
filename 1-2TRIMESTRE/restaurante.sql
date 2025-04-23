@@ -74,18 +74,51 @@ FROM plato;
 
 SELECT 
 	CONCAT(
-		'<?xml version = "1.0" encoding="UTEF-8"?>',
-        '\n <meseros>',
+		'<?xml version = "1.0" encoding="UTF-8"?>',
+        '\n<meseros>',
 			GROUP_CONCAT(
 				CONCAT(
-					'\n <mesero>',
-						'\n <id>', idMesero, '</id>',
-						'\n <nombre>', nombre, '</nombre>',
-                        '\n <turno>', turno, '</turno>',
-                        '\n <telefono>', telefono, '</telefono>',
-					'\n </plato>'
+					'\n  <mesero>',
+						'\n    <id>', idMesero, '</id>',
+						'\n    <nombre>', nombre, '</nombre>',
+                        '\n    <turno>', turno, '</turno>',
+                        '\n    <telefono>', telefono, '</telefono>',
+					'\n  </mesero>'
                     ) SEPARATOR ''
 				),
-                '\n <meseros>'
-			) AS xml_result
+        '\n</meseros>'
+	) AS xml_result
 FROM mesero;
+
+SELECT 
+	CONCAT(
+		'<?xml version = "1.0" encoding="UTF-8"?>',
+        '\n<pedidos>',
+			GROUP_CONCAT(
+				CONCAT(
+					'\n  <pedido>',
+						'\n    <id>', p.idPedido, '</id>',
+						'\n    <fecha>', p.fecha, '</fecha>',
+						'\n    <tipo>', p.tipoPedido, '</tipo>',
+                        -- IFNULL sirve para reemplazar un dato nulo por un valor alternativo, de esta forma
+						-- evitamos que en el xml salga: <mesa>null</mesa>
+						'\n    <mesa>', IFNULL(p.mesa, ''), '</mesa>',
+						'\n    <telefono>', IFNULL(p.telefono, ''), '</telefono>',
+						'\n    <direccion>', IFNULL(p.direccion, ''), '</direccion>',
+						'\n    <plato>',
+							'\n      <id>', pl.idPlato, '</id>',
+							'\n      <nombre>', pl.nombre, '</nombre>',
+							'\n      <precio>', pl.precio, '</precio>',
+						'\n    </plato>',
+						'\n    <mesero>',
+							'\n      <id>', m.idMesero, '</id>',
+							'\n      <nombre>', m.nombre, '</nombre>',
+						'\n    </mesero>',
+					'\n  </pedido>'
+                    ) SEPARATOR ''
+				),
+        '\n</pedidos>'
+	) AS xml_result
+FROM pedido p
+JOIN plato pl ON p.idPlato = pl.idPlato
+JOIN mesero m ON p.idMesero = m.idMesero;
