@@ -171,6 +171,27 @@ BEGIN
         
 END;
 
+/* EJERCICIO 9: MOSTRAR LA SUMA DE VENTAS. PASA EL DNI DEL EMPLEADO POR PARAMETRO. SI EL PRECIO DE LAS VENTAS ESTÁ EN NULL
+    DEBE MOSTRARSE SU MENSAJE INDICADO QUE NO HAY VENTAS REGISTRADAS. EN CASO CONTRARIO,
+    DEBE MOSTRARSE EL TOTAL DE VENTAS MEDIANTE DBMS */
+SELECT * FROM vende;
+/
+DECLARE
+    v_dni_empleado vende.dni_empleado%TYPE := &dni;
+    v_ventas vende.precio%TYPE;
+  
+BEGIN
+    SELECT 
+    SUM(precio)
+    INTO v_ventas FROM vende
+    WHERE v_dni_empleado = dni_empleado;
+    
+    IF v_ventas IS NULL
+    THEN dbms_output.put_line('no hay ventas');
+    ELSE dbms_output.put_line('las ventas son: ' || v_ventas);
+    END IF;
+END;
+
 
 
 
