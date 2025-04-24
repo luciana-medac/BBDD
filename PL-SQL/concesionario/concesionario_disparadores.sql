@@ -26,6 +26,15 @@ BEGIN
     :NEW.fecha_insercion := SYSDATE;
 END;
 
-
+/* EJERCICIO 1: TRIGGER QUE IMPIDE REGISTRAR UNA VENTA SI EL PRECIO ES MENOR QUE 1000  */
+CREATE OR REPLACE TRIGGER checkVenta
+BEFORE INSERT ON vende
+for each row
+    BEGIN
+        IF :NEW.precio < 1000
+        THEN 
+            RAISE_APPLICATION_ERROR(-20001, 'No se puede registrar un precio menor a 1000');
+        END IF;
+END;
 
 
