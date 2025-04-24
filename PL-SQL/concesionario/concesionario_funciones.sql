@@ -24,3 +24,38 @@ BEGIN
     v_suma_precio := precio_ventas(v_dni);
     dbms_output.put_line('la suma de ventas es: ' || v_suma_precio);
 END;
+
+/* Función que devuelve el número de coches vendidos por un empleado */
+CREATE OR REPLACE FUNCTION coches_vendidos (v_dni vende.dni_empleado%TYPE)
+    RETURN NUMBER
+    AS 
+        v_total vende.precio%TYPE;
+    
+BEGIN
+    SELECT
+        COUNT(precio)
+        INTO v_total
+        FROM vende
+        WHERE dni_empleado = v_dni;
+        
+    RETURN v_total;
+
+END;
+
+/*EJECUTARLA*/
+DECLARE
+    v_total vende.precio%TYPE;
+    v_dni vende.dni_empleado%TYPE := &dni;
+BEGIN
+    v_total := coches_vendidos(v_dni);
+    dbms_output.put_line('total de ventas: ' || v_total || ' del empleado con DNI ' || v_dni);
+END;
+
+
+
+
+
+
+
+
+
