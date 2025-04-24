@@ -48,17 +48,18 @@ END;
 
 /* Listar los empleados que tienen una antigüedad antes del año 2010 */
 DECLARE
-    v_nombre empleado.nombre;
+    v_nombre empleado.nombre%TYPE;
     CURSOR c_empleados IS
         SELECT nombre
         FROM empleado
-        WHERE anio_empleado > '2010-12-31'
+        WHERE anio_incorporacion < 2010-01-01;
 BEGIN
-    OPEN c_empleados
+    OPEN c_empleados;
     LOOP
         FETCH c_empleados INTO v_nombre;
     EXIT WHEN c_empleados%NOTFOUND;
-    dbms_output.put_line('Los empleados con antiguedad de antes del 2010 ' || c_empleados)
+    dbms_output.put_line( 'Empleado con antiguedad ' || v_nombre);
     END LOOP;
     CLOSE c_empleados;
 END;
+

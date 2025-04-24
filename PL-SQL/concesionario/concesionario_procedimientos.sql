@@ -55,3 +55,36 @@ DECLARE
 BEGIN
     contar_modelos_coche(v_marca); -- se llama al procedimiento y se pasa por parámetro la variable
 END;
+
+/* Crear un procedimiento que utilice un cursor para listar los empleados que tienen una antigüedad antes del año 2010 */
+CREATE OR REPLACE PROCEDURE empleados_con_antiguedad AS 
+    v_nombre VARCHAR2(50);
+    
+    CURSOR c_empleados IS
+        SELECT nombre
+        FROM empleado
+        WHERE anio_incorporacion < 2010-01-01;
+BEGIN
+
+    OPEN c_empleados;
+    LOOP
+        FETCH c_empleados INTO v_nombre;
+    EXIT WHEN c_empleados%NOTFOUND;
+    dbms_output.put_line( 'Empleado con antiguedad ' || v_nombre);
+    END LOOP;
+    CLOSE c_empleados;
+    
+END;
+
+/* PARA EJECUTARLO */
+EXEC empleados_con_antiguedad;
+
+
+
+
+
+
+
+
+
+
