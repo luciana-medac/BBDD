@@ -63,3 +63,6 @@ BEGIN
     CLOSE c_empleados;
 END;
 
+/* Crear un procedimiento que utilice un cursor para listar la descripción y el precio de compra de cada coche en la tabla coche */
+
+
