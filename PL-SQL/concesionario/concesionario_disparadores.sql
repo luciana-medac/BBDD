@@ -45,7 +45,7 @@ CREATE OR REPLACE TRIGGER checkIva
 BEFORE UPDATE OF precio_compra ON coche
 for each row
     BEGIN
-        IF :OLD.precio_compra != :NEW.precio_compra OR :NEW.precio_compra IS NOT NULL 
+        IF :OLD.precio_compra != :NEW.precio_compra AND :NEW.precio_compra IS NOT NULL 
         THEN :NEW.precio_compra:= :NEW.precio_compra*1.21;
         END IF;
 END;
