@@ -81,10 +81,56 @@ EXEC empleados_con_antiguedad;
 
 
 
+/*EJERCICIO 4: Crear un procedimiento ActualizarPrecioCoche que acepte un nuevo_precio y matrícula como parámetro */
+CREATE OR REPLACE PROCEDURE actualizarPrecioCoche (
+    v_nuevo_precio coche.precio_compra%TYPE,
+    v_matricula coche.matricula%TYPE
+    ) AS 
+    
+    v_count NUMBER;
+    exception_matricula EXCEPTION;
+    exception_precio EXCEPTION;
+    
+BEGIN
+    
+    SELECT COUNT(matricula)
+        INTO v_count
+        FROM coche
+        WHERE v_matricula = matricula;
+    
+    IF v_count = 0 THEN
+       RAISE exception_matricula;
+    END IF;
+    
+        
+    IF v_nuevo_precio > 0 AND v_nuevo_precio < 10000 THEN
+        UPDATE coche SET precio_compra = v_nuevo_precio
+        WHERE matricula = v_matricula;
+    ELSE 
+        RAISE exception_precio;
+    END IF;
+    
+    EXCEPTION 
+        WHEN exception_precio THEN
+            dbms_output.put_line('No es precio válido');
+        WHEN exception_matricula THEN
+            dbms_output.put_line('No existe la ' || v_matricula);
+        WHEN OTHERS THEN
+            dbms_output.put_line('Error: ' || SQLERRM);
 
+END;
+    
+/ 
 
+DECLARE
+    v_nuevo_precio coche.precio_compra%TYPE := &precio;
+    v_matricula coche.matricula%TYPE := &matricula;
+BEGIN
+    actualizarPrecioCoche(v_nuevo_precio, v_matricula);
 
+END;
 
+/
 
-
+SELECT * FROM coche;
 
