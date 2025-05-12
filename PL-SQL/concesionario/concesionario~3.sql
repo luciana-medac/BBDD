@@ -1,15 +1,33 @@
-/* EJERCICIO 1: MOSTRAR LA MARCA DADA SU ID DE LA MARCA */
-SELECT * FROM marcas_coche;
-
-/
-
+/*EJERCICIO 3*/
+/*LUCIANA MOLINA GREGOLI */
+CREATE OR REPLACE TRIGGER asignar_telefono_empresa
+BEFORE INSERT ON empleado
+for each row
 DECLARE
-    v_id marcas_coche.id_marca&TYPE := &id_marca1;
-    v_marca marcas_coche.marca&TYPE;
-BEGIN
-    SELECT marca INTO v_marca
-    FROM marcas_coche
-    WHERE id_marca = v_id;
-    dbms_output.put_line('La marca es: ' || v_marca);
-
+    v_count number;
+    BEGIN
+        
+        SELECT (id_puesto)
+        INTO v_count 
+        FROM empleado
+        WHERE v_count = :new.id_puesto;
+        
+        IF :OLD.telef IS NULL
+        THEN :NEW.telef := '953941822';
+        END IF;
+        
+        IF v_count > 0
+        THEN 
+            RAISE_APPLICATION_ERROR(-20020, 'Error: El puesto con ese ID ya está asignado'); 
+        END IF;
+                
 END;
+
+/*PRUEBA DEL TRIGGER EJERCICIO 3*/
+INSERT INTO empleado(dni,nombre,id_puesto,anio_incorporacion) VALUES
+('7777774T', 'Carla', 5, 2011);
+/
+/*COMPROBAR QUE SE HA INSERTADO CORRECTAMENTE*/
+SELECT * FROM empleado;
+
+
