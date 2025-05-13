@@ -1,6 +1,7 @@
 DROP TYPE Direccion FORCE;
 DROP TYPE Persona FORCE;
-
+DROP TYPE Profesor FORCE;
+DROP TYPE Alumno FORCE;
 
 -- DEFINICIÓN DE UN TIPO PARA DIRECCIÓN
 CREATE OR REPLACE TYPE Direccion AS OBJECT(
@@ -53,7 +54,7 @@ END;
 
 -- DEFINCIÓN DEL CUERPO DE PROFESOR (LOS MÉTODOS
 CREATE OR REPLACE TYPE BODY Profesor AS
-    MEMBER PROCEDURE aumentoSalario(salario NUMER) IS
+    MEMBER PROCEDURE aumentoSalario(salario NUMBER) IS
     BEGIN
     -- SE USA EL SELF PARA DIFERENCIAR EL ATRIBUTO DE LA VARIABLE
         self.salario := self.salario + salario;
@@ -63,3 +64,69 @@ END;
 -- CREACIÓN DE TABLAS PARA ALMACENAR OBJETOS DE ALUMNO Y PROFESOR
 CREATE TABLE Alumnos OF Alumno;
 CREATE TABLE Profesores OF Profesor;
+
+-- CREAR/MODIFICAR OBJETO ALUMNO EN MEMORIA Y HACERLO PERSISTENTE(QUE SE ALMACENE)
+DECLARE
+    alumno1 Alumno;
+BEGIN
+    -- CREAMOS EL OBJETO ALUMNO1
+    alumno1 := new Alumno('Ana', 'Garcia', 
+                            Direccion ('C/Madrid', 'Jaen', 23600), '07-11-1985', '123456','9');
+    -- PODEMOS MODIFICAR EL ATRIBUTO NOMBRE (si ejecutamos, se guardará con este nombre)
+    alumno1.nombre := 'Marta';
+    
+    -- PARA GUARDARLO
+    INSERT INTO Alumnos VALUES(alumno1);
+    dbms_output.put_line('Alumno: ' || alumno1.nombre || ' - Calificacion: ' || alumno1.calificacion);
+    dbms_output.put_line('La edad es: ' || alumno1.calcularEdad());
+END;
+
+-- CONSULTAR ALUMNO DE LA TABLA
+DECLARE
+    
+    a Alumno; -- ASEGURATE DE QUE ALUMNO ES EL TIPO CORRECTO Y calcularEdad ESTÉ DEFINIDO (cuerpo)
+    
+BEGIN
+    -- el value va la variable que yo le dé
+    SELECT VALUE(al) INTO a FROM Alumnos al WHERE al.nombre = 'Marta';
+    dbms_output.put_line('La edad es: ' || a.calcularEdad());
+END;
+
+/*
+DECLARE
+    profesor1 Profesor;
+BEGIN
+    profesor1 := new Profesor('Santiago', 'Lopez', Direccion ('C/Huelma', 'Sevilla', 23400), '09-12-1974', 'Literatura', 100);
+    
+    INSERT INTO Profesores VALUES(profesor1);
+    dbms_output.put_line('Profesor: ' || profesor1.nombre || ' imparte la asignatura: ' 
+                                      || profesor1.asignatura || ' y tiene un salario de: ' || profesor1.aumentoSalario(profesor1.salario));
+END;
+*/
+
+-- INSERTAR DATOS PROFESORES UTILIZANDO UN CONSTRUCTOR (POR DEFECTO)
+INSERT INTO Profesores VALUES(
+    Profesor('Carlos', 'Fernandez', Direccion ('C/Andalucia' , 'Jaen', 23401), '07-04-1990', 'Informatica', 1000)    
+);
+
+DECLARE
+    -- CREAMOS UNA VARIABLE DE TIPO PROFESOR
+    p Profesor;
+BEGIN
+    -- SACAMOS LOS DATOS DEL PROFESOR DONDE SU ASIGNATURA SEA INFORMATICA
+    SELECT value(pro)INTO p FROM Profesores pro WHERE pro.asignatura = 'Informatica';
+    -- LE AUMENTAMOS EL SALARIO SUMANDOLE 100 CON LA FUNCIÓN
+    p.aumentoSalario(100);
+    -- ACTUALIZAMOS LOS DATOS EN LA TABLA
+    UPDATE Profesores pro SET VALUE(pro) = p WHERE pro.asignatura = 'Informatica';
+    -- MOSTRAMOS EL RESULTADO
+    dbms_output.put_line('El salario es de: ' || p.salario);
+END;
+
+
+
+
+
+
+
+
