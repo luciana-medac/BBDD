@@ -2,6 +2,8 @@ DROP TYPE Direccion FORCE;
 DROP TYPE Persona FORCE;
 DROP TYPE Profesor FORCE;
 DROP TYPE Alumno FORCE;
+DROP TYPE Administrativo FORCE;
+DROP TYPE Becario FORCE;
 
 -- DEFINICIÓN DE UN TIPO PARA DIRECCIÓN
 CREATE OR REPLACE TYPE Direccion AS OBJECT(
@@ -127,7 +129,7 @@ END;
 -- CREAR UN ARRAY
 CREATE OR REPLACE TYPE telefonoVArray as varray(3) of varchar2(9);
 
-CREATE OR REPLACE TYPE administrativo UNDER Persona (
+CREATE OR REPLACE TYPE Administrativo UNDER Persona (
     categoria VARCHAR2(50),
     telefonos telefonoVArray,
     MEMBER FUNCTION bonus(base NUMBER) RETURN NUMBER,
@@ -143,11 +145,19 @@ CREATE OR REPLACE TYPE Becario UNDER Persona (
     universidad VARCHAR(50),
     telefonos telefonoVArray,
     -- POLIMORFISMO CON OVERRIDING
-    OVERRIDING MEMBER FUNCTION calcularEdad RETURN MEMBER
+    OVERRIDING MEMBER FUNCTION calcularEdad RETURN NUMBER
 );
 
+CREATE OR REPLACE TYPE BODY Becario AS
+    OVERRIDING MEMBER FUNCTION calcularEdad RETURN NUMBER IS
+    BEGIN
+    -- el FLOOR redondea
+        RETURN FLOOR(MONTHS_BETWEEN(SYSDATE, f_nac) / 12);
+        END calcularEdad;
+END;
+
 CREATE OR REPLACE TYPE BODY Administrativo AS
-    MEMBER FUNCTION bonus(base NUMBER) IS
+    MEMBER FUNCTION bonus(base NUMBER) RETURN NUMBER IS
     BEGIN
     -- SE USA EL SELF PARA DIFERENCIAR EL ATRIBUTO DE LA VARIABLE
         RETURN base*1.1;
@@ -158,6 +168,35 @@ CREATE OR REPLACE TYPE BODY Administrativo AS
         RETURN (base + base1);
     END;
 END;
+
+-- CREATE TABLE Becarios OF Becario
+-- CREATE TABLE Administrativos OF Administrativos
+
+-- BLOQUE ANÓNIMO DE PRUEBA, CREAR OBJETOS Y COMPROBAR FUNCIONES
+DECLARE
+    a Administrativo;
+    b Becario;
+
+BEGIN
+    a := new Administrativo('Manuel', 'Lopez Gutierrez', Direccion('C/123', 'Cordoba', 25003),
+                            '05-05-1995', 'ugr', telefonoVArray('123456789','666666666','777747775'));
+    b := new Becario('Fifiru', 'Salvatore Silvestre', Direccion('C/Falsilla', 'Almeria', 44598), '02-04-1996',
+                    'UJA',telefonoVArray('953350000'));
+    dbms_output.put_line('Sueldo base del administrativo ' || a.bonus(1000));
+    dbms_output.put_line('Sueldo base del administrativo ' || a.bonus(1000, 200));
+    dbms_output.put_line('La edad del becario es ' || b.calcularEdad);
+END;
+
+
+
+
+
+
+
+
+
+
+
 
 
 
