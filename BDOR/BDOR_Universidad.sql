@@ -123,10 +123,41 @@ BEGIN
     dbms_output.put_line('El salario es de: ' || p.salario);
 END;
 
+-- Diferencia entre una tabla anidada y un v.array --> La tabla anidada no tiene limite en comparación con el Varray 
+-- CREAR UN ARRAY
+CREATE OR REPLACE TYPE telefonoVArray as varray(3) of varchar2(9);
 
+CREATE OR REPLACE TYPE administrativo UNDER Persona (
+    categoria VARCHAR2(50),
+    telefonos telefonoVArray,
+    MEMBER FUNCTION bonus(base NUMBER) RETURN NUMBER,
+    -- MEMBER FUCTION bonus(base NUMBER) RETURN NUMBER  esta sobrecarga no sería válida, porque tiene el mismo nombre, mismo parámetro que recibe y retorna el mismo tipo de dato
+    -- MEMBER FUCTION bonus(hola NUMBER) RETURN NUMBER tampoco sería válido
+    -- MEMBER FUCTION bonus(hola NUMBER, base NUMBER) RETURN NUMBER
+    -- MEMBER FUCTION bonus(base NUMBER, hola NUMBER) RETURN NUMBER estas dos tampoco serían válidas
+    MEMBER FUNCTION bonus(base NUMBER, base1 NUMBER) RETURN NUMBER -- esto sería válido
+    
+);
 
+CREATE OR REPLACE TYPE Becario UNDER Persona (
+    universidad VARCHAR(50),
+    telefonos telefonoVArray,
+    -- POLIMORFISMO CON OVERRIDING
+    OVERRIDING MEMBER FUNCTION calcularEdad RETURN MEMBER
+);
 
-
+CREATE OR REPLACE TYPE BODY Administrativo AS
+    MEMBER FUNCTION bonus(base NUMBER) IS
+    BEGIN
+    -- SE USA EL SELF PARA DIFERENCIAR EL ATRIBUTO DE LA VARIABLE
+        RETURN base*1.1;
+    END;
+    
+    MEMBER FUNCTION bonus(base NUMBER, base1 NUMBER) RETURN NUMBER IS
+    BEGIN
+        RETURN (base + base1);
+    END;
+END;
 
 
 
