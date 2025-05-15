@@ -188,6 +188,64 @@ BEGIN
 END;
 
 
+-- CREAMOS EL OBJETO
+CREATE OR REPLACE TYPE Dispositivo AS OBJECT (
+    modelo VARCHAR2(50),
+    consumo NUMBER,
+    
+    CONSTRUCTOR FUNCTION Dispositivo (
+        consumo NUMBER,
+        modelo VARCHAR2) RETURN SELF AS RESULT,
+    
+    -- MAP CUANDO SE LLAME A ESA FUNCIÓN, PODEMOS HACER QUE SE ORDENE POR CONSUMO (del mayor al menor)
+    -- básicamente sirve para ordenar y además esta se tiene que crear en el objeto padre
+    MAP MEMBER FUNCTION mapConsumo RETURN NUMBER,
+    STATIC FUNCTION tipoUso RETURN VARCHAR2
+);
+
+CREATE OR REPLACE TYPE BODY Dispositivo AS
+-- Constructor personalizado con orden cambiado
+    CONSTRUCTOR FUNCTION Dispositivo(consumo NUMBER, modelo VARCHAR2) RETURN SELF AS RESULT IS
+    
+    BEGIN
+        SELF.consumo := consumo;
+        SELF.modelo := modelo;
+        RETURN;
+    END;
+
+    MAP MEMBER FUNCTION mapConsumo RETURN NUMBER IS
+    BEGIN
+        RETURN SELF.consumo;
+    END;
+    
+    STATIC FUNCTION tipoUso RETURN VARCHAR2 IS
+    BEGIN
+        RETURN 'Electronico';
+    END;
+END;
+
+CREATE TABLE Dispositivos OF Dispositivo;
+
+INSERT INTO Dispositivos VALUES(
+    Dispositivo(5, 'huawei')
+);
+
+INSERT INTO Dispositivos VALUES(
+    Dispositivo(4, 'nokia')
+);
+
+INSERT INTO Dispositivos VALUES(
+    Dispositivo(6, 'xiaomi')
+);  
+
+
+/* BLOQUE ANONIMO PARA PROBAR LA FUNCION STÁTICA*/
+DECLARE
+    d4 Dispositivo := new Dispositivo(12, 'Samsung');
+    d5 Dispositivo := new Dispositivo(6, 'nokia');
+BEGIN
+    dbms_output.put_line('El dispositivo: ' || d4.modelo || ' es de tipo ' || Dispositivo.tipoUso);
+END;
 
 
 
