@@ -38,8 +38,8 @@ CREATE OR REPLACE TYPE Moderador UNDER Persona(
     nivelAsignado VARCHAR2(50),
     nivelAutorizacion NUMBER(2),
     
-    MEMBER PROCEDURE banearUsuario,
-    MEMBER FUNCTION esSenior RETURN VARCHAR2
+    MEMBER PROCEDURE banearUsuario(nombreUsuario VARCHAR2),
+    MEMBER FUNCTION esSenior RETURN BOOLEAN
 );
 
 -- BODY DE PERSONA
@@ -83,7 +83,16 @@ END;
 
 -- BODY DE MODERADOR
 CREATE OR REPLACE TYPE BODY Moderador AS
-
+    MEMBER PROCEDURE banearUsuario(nombreUsuario VARCHAR2) IS
+    BEGIN
+        dbms_output.put_line('Usuario ' || nombreUsuario || ' ha sido baneado por el moderador ' || SELF.nombre);
+    END;
+    
+    MEMBER FUNCTION esSenior RETURN  BOOLEAN IS
+    BEGIN
+        RETURN SELF.nivelAutorizacion >= 5;
+    END;
+END;
 
 
 
