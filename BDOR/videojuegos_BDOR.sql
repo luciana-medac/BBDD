@@ -94,6 +94,40 @@ CREATE OR REPLACE TYPE BODY Moderador AS
     END;
 END;
 
+-- CREAMOS LAS TABLAS
+CREATE TABLE Jugadores OF Jugador;
+CREATE TABLE Moderadores OF Moderador;
+
+-- INSERTAMOS DATOS 
+DECLARE
+    Jugador1 Jugador;
+    Jugador2 Jugador;
+BEGIN
+    Jugador1 := new Jugador('Sebastian', 'sebas@example.com', Direccion('C/Flores', 'Cordoba', 45001), '08-08-1998', 'sebas123', 23);
+    Jugador2 := new Jugador('Sara', 'sara@example.com', Direccion('C/Arcoiris', 'Sevilla', 32003), '04-06-2005', 'sarita8', 43);
+    
+    INSERT INTO Jugadores VALUES(Jugador1);
+    INSERT INTO Jugadores VALUES(Jugador2);
+    
+    dbms_output.put_line('Jugador 1: ' || jugador1.usuario || ' Jugador 2: ' || jugador2.usuario);
+END;
+
+DECLARE
+    Moderador1 Moderador;
+    Moderador2 Moderador;
+BEGIN
+    Moderador1 := new Moderador('Martin', 'martin@example.com', Direccion('C/Ajedrez', 'Barcelona', 42001), '16-06-1998', 'Mazmorras', 7);
+    Moderador2 := new Moderador('Laura', 'laura@example.com', Direccion('C/Naranja', 'Tenerife', 28007), '12-11-1996', 'Aguas Marinas', 3);
+    
+    INSERT INTO Moderadores VALUES(Moderador1);
+    INSERT INTO Moderadores VALUES(Moderador2);
+    
+    dbms_output.put_line('El moderador: ' || Moderador1.nombre || ' tiene el nivel de moderacion: ' || Moderador1.nivelAutorizacion || 
+    ' El moderador: ' || Moderador2.nombre || ' tiene el nivel de moderacion: ' || Moderador2.nivelAutorizacion);
+
+END;
+
+
 
 
 
