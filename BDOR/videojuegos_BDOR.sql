@@ -127,6 +127,22 @@ BEGIN
 
 END;
 
+SELECT * FROM Jugadores;
+
+-- PRUEBAS DE LOS MÉTODOS DE JUGADOR
+DECLARE
+    jd Jugador;
+BEGIN
+    SELECT * INTO jd FROM Jugadores WHERE usuario = 'sebas123';
+    
+    -- Mostramos las estadisticas del jugador
+    jd.mostrarEstadisticas;
+    
+    -- Mostramos la edad del jugador
+    dbms_output.put_line('La edad del jugador ' || jd.nombre || ' es: ' || jd.edadActual);
+    
+    
+END;
 
 
 
