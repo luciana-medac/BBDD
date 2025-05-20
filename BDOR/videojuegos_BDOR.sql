@@ -98,6 +98,9 @@ END;
 CREATE TABLE Jugadores OF Jugador;
 CREATE TABLE Moderadores OF Moderador;
 
+DROP TABLE Jugadores;
+DROP TABLE Moderadores;
+
 -- INSERTAMOS DATOS 
 DECLARE
     Jugador1 Jugador;
@@ -128,22 +131,30 @@ BEGIN
 END;
 
 SELECT * FROM Jugadores;
+SELECT * FROM Moderadores;
 
 -- PRUEBAS DE LOS MÉTODOS DE JUGADOR
 DECLARE
     jd Jugador;
 BEGIN
-    SELECT * INTO jd FROM Jugadores WHERE usuario = 'sebas123';
-    
+    SELECT VALUE(jg) INTO jd FROM Jugadores jg WHERE jg.usuario = 'sebas123';
     -- Mostramos las estadisticas del jugador
     jd.mostrarEstadisticas;
     
-    -- Mostramos la edad del jugador
+   -- Mostramos la edad del jugador
     dbms_output.put_line('La edad del jugador ' || jd.nombre || ' es: ' || jd.edadActual);
     
+    -- Cambiar nombre de usuario
+    jd.cambiarNombreUsuario('sebasputoamo7'); 
     
+    -- Mostramos los cambios
+    jd.mostrarEstadisticas;
 END;
 
+
+
+    
+    
 
 
 
