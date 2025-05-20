@@ -125,8 +125,8 @@ DECLARE
     Jugador1 Jugador;
     Jugador2 Jugador;
 BEGIN
-    Jugador1 := new Jugador('Sebastian', 'sebas@example.com', Direccion('C/Flores', 'Cordoba', 45001), '08-08-1998', 23, 'sebas123');
-    Jugador2 := new Jugador('Sara', 'sara@example.com', Direccion('C/Arcoiris', 'Sevilla', 32003), '04-06-2005', 43, 'sarita8');
+    Jugador1 := new Jugador('Sebastian', 'sebas@example.com', Direccion('C/Flores', 'Cordoba', 45001), '08-08-1998', 'sebas123', 23);
+    Jugador2 := new Jugador('Sara', 'sara@example.com', Direccion('C/Arcoiris', 'Sevilla', 32003), '04-06-2005', 'sarita8', 43);
     
     INSERT INTO Jugadores VALUES(Jugador1);
     INSERT INTO Jugadores VALUES(Jugador2);
@@ -206,8 +206,8 @@ BEGIN
     dbms_output.put_line('El nivel de: ' || jg.usuario || ' se ha actualizado a: ' || jg.nivel);
 END;
     
-
-
+-- PRUEBA DEL CONSTRUCTOR PERSONALIZADO DE JUGADOR
+INSERT INTO Jugadores VALUES('Pedro', 'pedro@example.com', Direccion('C/Ordenador', 'Murcia', 45001), '08-08-1998', 'pedrito23', 40);
 
 
     
