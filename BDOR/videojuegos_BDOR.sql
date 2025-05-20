@@ -27,9 +27,14 @@ CREATE OR REPLACE TYPE Jugador UNDER Persona(
     usuario VARCHAR2(50),
     nivel NUMBER(3),
     
+    CONSTRUCTOR FUNCTION Jugador(
+        nivel NUMBER,
+        usuario VARCHAR2) RETURN SELF AS RESULT,
+    
     MEMBER PROCEDURE mostrarEstadisticas,
     MEMBER PROCEDURE cambiarNombreUsuario(nuevoNombre VARCHAR2),
-    OVERRIDING MEMBER FUNCTION edadActual RETURN NUMBER
+    OVERRIDING MEMBER FUNCTION edadActual RETURN NUMBER,
+    MEMBER PROCEDURE aumentarNivel(nivel NUMBER)
     
 );
 
@@ -52,6 +57,14 @@ END;
 
 -- BODY DE JUGADOR
 CREATE OR REPLACE TYPE BODY Jugador AS
+    -- Constructor personalizado con orden cambiada
+    CONSTRUCTOR FUNCTION Jugador( nivel NUMBER, usuario VARCHAR2) RETURN SELF AS RESULT IS
+    BEGIN
+        SELF.nivel := nivel;
+        SELF.usuario := usuario;
+        RETURN;
+    END;
+
     -- Muestra el usuario y su nivel
     MEMBER PROCEDURE mostrarEstadisticas IS
     BEGIN
@@ -79,6 +92,12 @@ CREATE OR REPLACE TYPE BODY Jugador AS
         SELF.usuario := nuevoNombre;
         dbms_output.put_line('Nombre de usuario actualizado: ' || SELF.usuario);
     END;
+    
+    -- Actualizar el nivel
+    MEMBER PROCEDURE aumentarNivel(nivel NUMBER) IS
+    BEGIN
+        self.nivel := self.nivel + nivel;
+    END aumentarNivel;
 END;
 
 -- BODY DE MODERADOR
@@ -106,8 +125,8 @@ DECLARE
     Jugador1 Jugador;
     Jugador2 Jugador;
 BEGIN
-    Jugador1 := new Jugador('Sebastian', 'sebas@example.com', Direccion('C/Flores', 'Cordoba', 45001), '08-08-1998', 'sebas123', 23);
-    Jugador2 := new Jugador('Sara', 'sara@example.com', Direccion('C/Arcoiris', 'Sevilla', 32003), '04-06-2005', 'sarita8', 43);
+    Jugador1 := new Jugador('Sebastian', 'sebas@example.com', Direccion('C/Flores', 'Cordoba', 45001), '08-08-1998', 23, 'sebas123');
+    Jugador2 := new Jugador('Sara', 'sara@example.com', Direccion('C/Arcoiris', 'Sevilla', 32003), '04-06-2005', 43, 'sarita8');
     
     INSERT INTO Jugadores VALUES(Jugador1);
     INSERT INTO Jugadores VALUES(Jugador2);
@@ -151,9 +170,41 @@ BEGIN
     jd.mostrarEstadisticas;
 END;
 
-
-
+-- PRUEBA DE LOS MÉTODOS DE MODERADOR
+DECLARE
+    m Moderador;
+    senior BOOLEAN;
+BEGIN
+    SELECT VALUE(mod) INTO m FROM Moderadores mod WHERE mod.nombre = 'Laura';
     
+    m.banearUsuario('sarita8');
+    
+    -- Verificamos si es senior según su nivel de acceso
+    senior := m.esSenior;
+    IF senior THEN
+        dbms_output.put_line('El moderador es senior');
+    ELSE
+        dbms_output.put_line('El moderador no es senior');
+    END IF;
+    
+    -- Mostrar la edad del moderador 
+    dbms_output.put_line('Edad del moderador: ' || m.edadActual); -- No saldrá con la edad redondeada porque no tiene polimorfismo
+END;
+
+
+-- UPDATE
+DECLARE
+    jg Jugador;
+BEGIN
+    SELECT VALUE(jd) INTO jg FROM Jugadores jd WHERE jd.usuario = 'sarita8';
+    
+    -- Para utilizar la funcion, hay que definirla y añadirla al body de Jugador
+    jg.aumentarNivel(10); -- le aumentamos 10 niveles más
+    -- Actualizamos los datos de la tabla
+    UPDATE Jugadores jd SET VALUE(jd) = jg WHERE jd.usuario = 'sarita8';
+    -- Mostramos el resultado
+    dbms_output.put_line('El nivel de: ' || jg.usuario || ' se ha actualizado a: ' || jg.nivel);
+END;
     
 
 
