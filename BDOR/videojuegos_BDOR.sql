@@ -26,11 +26,9 @@ CREATE OR REPLACE TYPE Persona AS OBJECT(
 CREATE OR REPLACE TYPE Jugador UNDER Persona(
     usuario VARCHAR2(50),
     nivel NUMBER(3),
-    
     CONSTRUCTOR FUNCTION Jugador(
         nivel NUMBER,
         usuario VARCHAR2) RETURN SELF AS RESULT,
-    
     MEMBER PROCEDURE mostrarEstadisticas,
     MEMBER PROCEDURE cambiarNombreUsuario(nuevoNombre VARCHAR2),
     OVERRIDING MEMBER FUNCTION edadActual RETURN NUMBER,
@@ -38,14 +36,19 @@ CREATE OR REPLACE TYPE Jugador UNDER Persona(
     
 );
 
+-- VARRAY DE ZONAS ASIGNADAS AL MODERADOR
+CREATE OR REPLACE TYPE zonasAsignadas AS VARRAY(3) of VARCHAR2(20);
+
 -- DEFINICION DE UN TIPO OBJETO MODERADOR
 CREATE OR REPLACE TYPE Moderador UNDER Persona(
-    nivelAsignado VARCHAR2(50),
+    nivelesAsignados zonasAsignadas, -- Implementamos el varray
     nivelAutorizacion NUMBER(2),
+    
     
     MEMBER PROCEDURE banearUsuario(nombreUsuario VARCHAR2),
     MEMBER FUNCTION esSenior RETURN BOOLEAN
 );
+
 
 -- BODY DE PERSONA
 CREATE OR REPLACE TYPE BODY Persona AS
@@ -57,13 +60,14 @@ END;
 
 -- BODY DE JUGADOR
 CREATE OR REPLACE TYPE BODY Jugador AS
-    -- Constructor personalizado con orden cambiada
-    CONSTRUCTOR FUNCTION Jugador( nivel NUMBER, usuario VARCHAR2) RETURN SELF AS RESULT IS
-    BEGIN
-        SELF.nivel := nivel;
-        SELF.usuario := usuario;
-        RETURN;
-    END;
+    CONSTRUCTOR FUNCTION Jugador(
+        nivel NUMBER,
+        usuario VARCHAR2) RETURN SELF AS RESULT IS
+        BEGIN
+            SELF.nivel := nivel;
+            SELF.usuario := usuario;
+            RETURN;
+        END;
 
     -- Muestra el usuario y su nivel
     MEMBER PROCEDURE mostrarEstadisticas IS
@@ -120,13 +124,18 @@ CREATE TABLE Moderadores OF Moderador;
 DROP TABLE Jugadores;
 DROP TABLE Moderadores;
 
--- INSERTAMOS DATOS 
+INSERT INTO Jugadores (nombre, email, domicilio, f_nac, nivel, usuario) VALUES
+('Sebastian', 'sebas@example.com', Direccion('Cordoba', 'C/Flores', 45001), '08-08-1998', 23, 'sebas123');
+
+SELECT * FROM Jugadores;
+
+-- INSERTAMOS DATOS
 DECLARE
     Jugador1 Jugador;
     Jugador2 Jugador;
 BEGIN
-    Jugador1 := new Jugador('Sebastian', 'sebas@example.com', Direccion('C/Flores', 'Cordoba', 45001), '08-08-1998', 'sebas123', 23);
-    Jugador2 := new Jugador('Sara', 'sara@example.com', Direccion('C/Arcoiris', 'Sevilla', 32003), '04-06-2005', 'sarita8', 43);
+    Jugador1 := new Jugador('Sebastian', 'sebas@example.com', Direccion('Cordoba', 'C/Flores', 45001), '08-08-1998', 23, 'sebas123');
+    Jugador2 := new Jugador('Sara', 'sara@example.com', Direccion('Sevilla', 'C/Arcoiris', 32003), '04-06-2005', 43, 'sarita8');
     
     INSERT INTO Jugadores VALUES(Jugador1);
     INSERT INTO Jugadores VALUES(Jugador2);
@@ -134,12 +143,16 @@ BEGIN
     dbms_output.put_line('Jugador 1: ' || jugador1.usuario || ' Jugador 2: ' || jugador2.usuario);
 END;
 
+SELECT * FROM Jugadores;
+
 DECLARE
     Moderador1 Moderador;
     Moderador2 Moderador;
 BEGIN
-    Moderador1 := new Moderador('Martin', 'martin@example.com', Direccion('C/Ajedrez', 'Barcelona', 42001), '16-06-1998', 'Mazmorras', 7);
-    Moderador2 := new Moderador('Laura', 'laura@example.com', Direccion('C/Naranja', 'Tenerife', 28007), '12-11-1996', 'Aguas Marinas', 3);
+    Moderador1 := new Moderador('Martin', 'martin@example.com', Direccion('C/Ajedrez', 'Barcelona', 42001), 
+                                '16-06-1998', zonasAsignadas('Zona Agua', 'Zona Desértica'), 7);
+    Moderador2 := new Moderador('Laura', 'laura@example.com', Direccion('C/Naranja', 'Tenerife', 28007), 
+                                '12-11-1996', zonasAsignadas('Zona Volcánica'), 3);
     
     INSERT INTO Moderadores VALUES(Moderador1);
     INSERT INTO Moderadores VALUES(Moderador2);
@@ -209,7 +222,7 @@ END;
 -- PRUEBA DEL CONSTRUCTOR PERSONALIZADO DE JUGADOR
 INSERT INTO Jugadores VALUES('Pedro', 'pedro@example.com', Direccion('C/Ordenador', 'Murcia', 45001), '08-08-1998', 'pedrito23', 40);
 
-
+INSERT INTO Jugadores VALUES('Diana', 'diana@example.com', Direccion('C/Valle', 'Jaen', 23004), '07-10-2004', 'dianaa710', 80);
     
             
 
