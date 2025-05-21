@@ -47,7 +47,9 @@ CREATE OR REPLACE TYPE Moderador UNDER Persona(
     
     
     MEMBER PROCEDURE banearUsuario(nombreUsuario VARCHAR2),
-    MEMBER FUNCTION esSenior RETURN BOOLEAN
+    MEMBER FUNCTION esSenior RETURN BOOLEAN,
+    MEMBER PROCEDURE enviarAlerta(mensaje VARCHAR2),
+    MEMBER PROCEDURE enviarAlerta(mensaje VARCHAR2, prioridad VARCHAR2)
 );
 
 
@@ -125,6 +127,16 @@ CREATE OR REPLACE TYPE BODY Moderador AS
     MEMBER FUNCTION esSenior RETURN  BOOLEAN IS
     BEGIN
         RETURN SELF.nivelAutorizacion >= 5;
+    END;
+    
+    MEMBER PROCEDURE enviarAlerta(mensaje VARCHAR2) IS
+    BEGIN
+        dbms_output.put_line('Alerta enviada: ' || mensaje);
+    END;
+    
+    MEMBER PROCEDURE enviarAlerta(mensaje VARCHAR2, prioridad VARCHAR2) IS
+    BEGIN
+        dbms_output.put_line('Alerta enviada: ' || mensaje || ' con prioridad: ' || prioridad);
     END;
 END;
 
@@ -254,7 +266,15 @@ INSERT INTO Jugadores VALUES('Pedro', 'pedro@example.com', Direccion('C/Ordenado
 
 INSERT INTO Jugadores VALUES('Diana', 'diana@example.com', Direccion('C/Valle', 'Jaen', 23004), '07-10-2004', 'dianaa710', 80);
     
-            
+-- PROBAR EL MÉTODO DE SOBRECARGA
+DECLARE
+    m Moderador;
+BEGIN
+    SELECT VALUE(mod) INTO m FROM Moderadores mod WHERE mod.nombre = 'Martin';
+    
+    m.enviarAlerta('Jugador usando lenguaje inapropiado.');
+    m.enviarAlerta('Un jugador está usando programas inapropiados', 'URGENTE');
+END;
 
 
 
