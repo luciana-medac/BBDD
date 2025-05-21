@@ -145,8 +145,8 @@ DECLARE
     Jugador1 Jugador;
     Jugador2 Jugador;
 BEGIN
-    Jugador1 := new Jugador('Sebastian', 'sebas@example.com', Direccion('Cordoba', 'C/Flores', 45001), '08-08-1998', 23, 'sebas123');
-    Jugador2 := new Jugador('Sara', 'sara@example.com', Direccion('Sevilla', 'C/Arcoiris', 32003), '04-06-2005', 43, 'sarita8');
+    Jugador1 := new Jugador('Sebastian', 'sebas@example.com', Direccion('Cordoba', 'C/Flores', 45001), '08-08-1998', 'sebas123', 23);
+    Jugador2 := new Jugador('Sara', 'sara@example.com', Direccion('Sevilla', 'C/Arcoiris', 32003), '04-06-2005', 'sarita8', 43);
     
     INSERT INTO Jugadores VALUES(Jugador1);
     INSERT INTO Jugadores VALUES(Jugador2);
@@ -192,6 +192,25 @@ BEGIN
     
     -- Mostramos los cambios
     jd.mostrarEstadisticas;
+    
+END;
+
+-- PRUEBA DEL MAP
+DECLARE
+    jd Jugador;
+    CURSOR c_jugadores IS
+        SELECT VALUE(jg) FROM
+        Jugadores jg
+        ORDER BY VALUE(jg) DESC;
+BEGIN
+    OPEN c_jugadores;
+    LOOP
+        FETCH c_jugadores INTO jd;
+        EXIT WHEN c_jugadores%NOTFOUND;
+        
+        jd.mostrarEstadisticas;
+    END LOOP;
+    CLOSE c_jugadores;
 END;
 
 -- PRUEBA DE LOS MÉTODOS DE MODERADOR
