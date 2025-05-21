@@ -18,7 +18,8 @@ CREATE OR REPLACE TYPE Persona AS OBJECT(
     domicilio DIRECCION,
     f_nac DATE,
     
-    MEMBER FUNCTION edadActual RETURN NUMBER
+    MEMBER FUNCTION edadActual RETURN NUMBER,
+    MAP MEMBER FUNCTION mapNivel RETURN NUMBER
     
 ) not final;
 
@@ -32,8 +33,8 @@ CREATE OR REPLACE TYPE Jugador UNDER Persona(
     MEMBER PROCEDURE mostrarEstadisticas,
     MEMBER PROCEDURE cambiarNombreUsuario(nuevoNombre VARCHAR2),
     OVERRIDING MEMBER FUNCTION edadActual RETURN NUMBER,
-    MEMBER PROCEDURE aumentarNivel(nivel NUMBER)
-    
+    MEMBER PROCEDURE aumentarNivel(nivel NUMBER),
+    OVERRIDING MAP MEMBER FUNCTION mapNivel RETURN NUMBER
 );
 
 -- VARRAY DE ZONAS ASIGNADAS AL MODERADOR
@@ -56,6 +57,11 @@ CREATE OR REPLACE TYPE BODY Persona AS
     BEGIN
         RETURN MONTHS_BETWEEN(SYSDATE, f_nac) /12;
     END edadActual;
+    
+    MAP MEMBER FUNCTION mapNivel RETURN NUMBER IS
+    BEGIN
+        RETURN 0;
+    END;
 END;
 
 -- BODY DE JUGADOR
@@ -102,6 +108,11 @@ CREATE OR REPLACE TYPE BODY Jugador AS
     BEGIN
         self.nivel := self.nivel + nivel;
     END aumentarNivel;
+    
+    OVERRIDING MAP MEMBER FUNCTION mapNivel RETURN NUMBER IS
+    BEGIN
+        RETURN SELF.nivel;
+    END;
 END;
 
 -- BODY DE MODERADOR
