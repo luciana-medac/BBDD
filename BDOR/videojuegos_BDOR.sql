@@ -27,9 +27,15 @@ CREATE OR REPLACE TYPE Persona AS OBJECT(
 CREATE OR REPLACE TYPE Jugador UNDER Persona(
     usuario VARCHAR2(50),
     nivel NUMBER(3),
+    
     CONSTRUCTOR FUNCTION Jugador(
+        nombre VARCHAR2,
+        email VARCHAR2,
+        domicilio DIRECCION,
+        f_nac DATE,
         nivel NUMBER,
         usuario VARCHAR2) RETURN SELF AS RESULT,
+        
     MEMBER PROCEDURE mostrarEstadisticas,
     MEMBER PROCEDURE cambiarNombreUsuario(nuevoNombre VARCHAR2),
     OVERRIDING MEMBER FUNCTION edadActual RETURN NUMBER,
@@ -68,10 +74,19 @@ END;
 
 -- BODY DE JUGADOR
 CREATE OR REPLACE TYPE BODY Jugador AS
+    -- Constructor personalizado
     CONSTRUCTOR FUNCTION Jugador(
+        nombre VARCHAR2,
+        email VARCHAR2,
+        domicilio DIRECCION,
+        f_nac DATE,
         nivel NUMBER,
         usuario VARCHAR2) RETURN SELF AS RESULT IS
         BEGIN
+            SELF.nombre := nombre;
+            SELF.email := email;
+            SELF.domicilio := domicilio;
+            SELF.f_nac := f_nac;
             SELF.nivel := nivel;
             SELF.usuario := usuario;
             RETURN;
@@ -157,8 +172,8 @@ DECLARE
     Jugador1 Jugador;
     Jugador2 Jugador;
 BEGIN
-    Jugador1 := new Jugador('Sebastian', 'sebas@example.com', Direccion('Cordoba', 'C/Flores', 45001), '08-08-1998', 'sebas123', 23);
-    Jugador2 := new Jugador('Sara', 'sara@example.com', Direccion('Sevilla', 'C/Arcoiris', 32003), '04-06-2005', 'sarita8', 43);
+    Jugador1 := new Jugador('Sebastian', 'sebas@example.com', Direccion('Cordoba', 'C/Flores', 45001), '08-08-1998', 23, 'sebas123');
+    Jugador2 := new Jugador('Sara', 'sara@example.com', Direccion('Sevilla', 'C/Arcoiris', 32003), '04-06-2005', 43, 'sarita8');
     
     INSERT INTO Jugadores VALUES(Jugador1);
     INSERT INTO Jugadores VALUES(Jugador2);
