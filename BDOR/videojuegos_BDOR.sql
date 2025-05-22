@@ -162,11 +162,6 @@ CREATE TABLE Moderadores OF Moderador;
 DROP TABLE Jugadores;
 DROP TABLE Moderadores;
 
-INSERT INTO Jugadores (nombre, email, domicilio, f_nac, nivel, usuario) VALUES
-('Sebastian', 'sebas@example.com', Direccion('Cordoba', 'C/Flores', 45001), '08-08-1998', 23, 'sebas123');
-
-SELECT * FROM Jugadores;
-
 -- INSERTAMOS DATOS
 DECLARE
     Jugador1 Jugador;
@@ -188,9 +183,9 @@ DECLARE
     Moderador2 Moderador;
 BEGIN
     Moderador1 := new Moderador('Martin', 'martin@example.com', Direccion('C/Ajedrez', 'Barcelona', 42001), 
-                                '16-06-1998', zonasAsignadas('Zona Agua', 'Zona Desértica'), 7);
+                                '16-06-1998', zonasAsignadas('Zona Agua', 'Zona DesÃ©rtica'), 7);
     Moderador2 := new Moderador('Laura', 'laura@example.com', Direccion('C/Naranja', 'Tenerife', 28007), 
-                                '12-11-1996', zonasAsignadas('Zona Volcánica'), 3);
+                                '12-11-1996', zonasAsignadas('Zona VolcÃ¡nica'), 3);
     
     INSERT INTO Moderadores VALUES(Moderador1);
     INSERT INTO Moderadores VALUES(Moderador2);
@@ -203,7 +198,7 @@ END;
 SELECT * FROM Jugadores;
 SELECT * FROM Moderadores;
 
--- PRUEBAS DE LOS MÉTODOS DE JUGADOR
+-- PRUEBAS DE LOS MÃ‰TODOS DE JUGADOR
 DECLARE
     jd Jugador;
 BEGIN
@@ -240,7 +235,7 @@ BEGIN
     CLOSE c_jugadores;
 END;
 
--- PRUEBA DE LOS MÉTODOS DE MODERADOR
+-- PRUEBA DE LOS MÃ‰TODOS DE MODERADOR
 DECLARE
     m Moderador;
     senior BOOLEAN;
@@ -249,7 +244,7 @@ BEGIN
     
     m.banearUsuario('sarita8');
     
-    -- Verificamos si es senior según su nivel de acceso
+    -- Verificamos si es senior segÃºn su nivel de acceso
     senior := m.esSenior;
     IF senior THEN
         dbms_output.put_line('El moderador es senior');
@@ -258,7 +253,7 @@ BEGIN
     END IF;
     
     -- Mostrar la edad del moderador 
-    dbms_output.put_line('Edad del moderador: ' || m.edadActual); -- No saldrá con la edad redondeada porque no tiene polimorfismo
+    dbms_output.put_line('Edad del moderador: ' || m.edadActual); -- No saldrÃ¡ con la edad redondeada porque no tiene polimorfismo
 END;
 
 
@@ -268,8 +263,8 @@ DECLARE
 BEGIN
     SELECT VALUE(jd) INTO jg FROM Jugadores jd WHERE jd.usuario = 'sarita8';
     
-    -- Para utilizar la funcion, hay que definirla y añadirla al body de Jugador
-    jg.aumentarNivel(10); -- le aumentamos 10 niveles más
+    -- Para utilizar la funcion, hay que definirla y aÃ±adirla al body de Jugador
+    jg.aumentarNivel(10); -- le aumentamos 10 niveles mÃ¡s
     -- Actualizamos los datos de la tabla
     UPDATE Jugadores jd SET VALUE(jd) = jg WHERE jd.usuario = 'sarita8';
     -- Mostramos el resultado
@@ -281,14 +276,14 @@ INSERT INTO Jugadores VALUES('Pedro', 'pedro@example.com', Direccion('C/Ordenado
 
 INSERT INTO Jugadores VALUES('Diana', 'diana@example.com', Direccion('C/Valle', 'Jaen', 23004), '07-10-2004', 'dianaa710', 80);
     
--- PROBAR EL MÉTODO DE SOBRECARGA
+-- PROBAR EL MÃ‰TODO DE SOBRECARGA
 DECLARE
     m Moderador;
 BEGIN
     SELECT VALUE(mod) INTO m FROM Moderadores mod WHERE mod.nombre = 'Martin';
     
     m.enviarAlerta('Jugador usando lenguaje inapropiado.');
-    m.enviarAlerta('Un jugador está usando programas inapropiados', 'URGENTE');
+    m.enviarAlerta('Un jugador estÃ¡ usando programas inapropiados', 'URGENTE');
 END;
 
 
